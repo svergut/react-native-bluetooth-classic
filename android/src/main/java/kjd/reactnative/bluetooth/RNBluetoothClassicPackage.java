@@ -13,6 +13,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
+import kjd.reactnative.bluetooth.conn.AbstractDeviceConnection;
+import kjd.reactnative.bluetooth.conn.ByteArrayDeviceConnectionImpl;
 import kjd.reactnative.bluetooth.conn.ConnectionAcceptorFactory;
 import kjd.reactnative.bluetooth.conn.ConnectionConnectorFactory;
 import kjd.reactnative.bluetooth.conn.DelimitedStringDeviceConnectionImpl;
@@ -34,6 +36,7 @@ public class RNBluetoothClassicPackage implements ReactPackage {
      */
     public static final Builder DEFAULT_BUILDER
             = RNBluetoothClassicPackage.builder()
+                .withConnectionFactory("byteArray", ByteArrayDeviceConnectionImpl::new)
                 .withConnectionFactory(StandardOption.CONNECTION_TYPE.defaultValue(), DelimitedStringDeviceConnectionImpl::new)
                 .withConnectorFactory(StandardOption.CONNECTOR_TYPE.defaultValue(), RfcommConnectorThreadImpl::new)
                 .withAcceptorFactory(StandardOption.ACCEPTOR_TYPE.defaultValue(), RfcommAcceptorThreadImpl::new);
@@ -63,9 +66,12 @@ public class RNBluetoothClassicPackage implements ReactPackage {
      * the constructors will be made private.
      */
     public RNBluetoothClassicPackage() {
-        this.mConnectionFactories = Collections.singletonMap(
-                StandardOption.CONNECTION_TYPE.defaultValue(),
-                DelimitedStringDeviceConnectionImpl::new);
+        Map<String, DeviceConnectionFactory> connectionMap = new HashMap<>();
+
+        connectionMap.put(StandardOption.CONNECTION_TYPE.defaultValue(), DelimitedStringDeviceConnectionImpl::new);
+        connectionMap.put("byteArray", ByteArrayDeviceConnectionImpl::new);
+
+        this.mConnectionFactories = connectionMap;
         this.mAcceptorFactories = Collections.singletonMap(
                 StandardOption.ACCEPTOR_TYPE.defaultValue(),
                 RfcommAcceptorThreadImpl::new);

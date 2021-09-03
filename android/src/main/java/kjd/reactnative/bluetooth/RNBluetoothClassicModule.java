@@ -763,7 +763,12 @@ public class RNBluetoothClassicModule
                     return;
                 }
 
+                Log.d("_test", properties.toString());
                 final String connectionType = StandardOption.CONNECTION_TYPE.get(properties);
+                Log.d("_test", connectionType);
+
+                Log.d("_test", mConnectionFactories.toString());
+
                 if (!mConnectionFactories.containsKey(connectionType)) {
                     promise.reject(Exceptions.INVALID_CONNECTION_TYPE.name(),
                             Exceptions.INVALID_CONNECTION_TYPE.message(connectorType));
