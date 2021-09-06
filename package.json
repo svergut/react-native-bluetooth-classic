@@ -11,7 +11,7 @@
     "tsc-win": "npx tsc",
     "tsc:watch": "tsc --watch",
     "build": "npm run clean && npm run tsc",
-    "build-win": "npm run clean-2 && npm run tsc-2",
+    "build-win": "npm run clean-win && npm run tsc-win",
     "test": "jest",
     "preversion": "npm run build",
     "postversion": "git push && git push --tags && npm publish",
