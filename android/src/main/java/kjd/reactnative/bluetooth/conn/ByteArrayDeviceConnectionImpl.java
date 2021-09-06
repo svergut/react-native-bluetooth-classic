@@ -27,6 +27,7 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
      * The buffer in which data is stored.
      */
     private final ByteBuffer mBuffer;
+    private final int crutchyExpectedMessageLength = 10;
 
     /**
      * Creates a new {@link AbstractDeviceConnection} to the provided NativeDevice, using the provided
@@ -70,7 +71,19 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
 
     @Override
     public synchronized boolean clear() {
+        Log.i("_debug", mBuffer.toString());
+        Log.i("_debug", mBuffer.array().toString());
+        Log.i("_debug", "clearing");
+
+        for (int i = 0; i < crutchyExpectedMessageLength; i++) {
+            mBuffer.putInt(i, 0);
+        }
+
         mBuffer.clear();
+
+        Log.i("_debug", mBuffer.toString());
+        Log.i("_debug", mBuffer.array().toString());
+
         return true;
     }
 
@@ -81,9 +94,14 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
      * @return the next message from the buffer
      * @throws IOException if an error occurs during reading
      */
+
     @Override
     public String read() {
-        String message = Base64.encode(mBuffer.array(), Base64.DEFAULT).toString();
+        StringBuffer msg = new StringBuffer();
+
+        msg.append(new String(mBuffer.array(), 0, 10));
+
+        String message = msg.toString(); //Base64.encode(mBuffer.array(), Base64.DEFAULT).toString();
         clear();
 
         return message;
